@@ -1,3 +1,7 @@
+---
+title: Privacy Policy for Outfit Finder
+layout: none
+---
 # Privacy Policy for Outfit Finder
 
 **Last updated: June 17, 2026**
