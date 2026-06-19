@@ -1,6 +1,5 @@
 ---
 title: Privacy Policy for Outfit Finder
-layout: none
 ---
 # Privacy Policy for Outfit Finder
 
