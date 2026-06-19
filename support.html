@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Support</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --card: #161922;
+    --border: #262b36;
+    --text: #e8eaed;
+    --muted: #9aa1ac;
+    --accent: #5b8cff;
+    --accent-hover: #4575f0;
+    --success: #2ecc71;
+    --error: #ff5c5c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding: 48px 16px;
+    min-height: 100vh;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  header h1 {
+    font-size: 28px;
+    margin: 0 0 8px;
+  }
+
+  header p {
+    color: var(--muted);
+    margin: 0;
+    font-size: 15px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    margin-top: 18px;
+    color: var(--muted);
+  }
+
+  label:first-of-type { margin-top: 0; }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #0e1015;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 24px;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  button:hover { background: var(--accent-hover); }
+  button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .status {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: none;
+  }
+
+  .status.success {
+    display: block;
+    background: rgba(46, 204, 113, 0.12);
+    border: 1px solid rgba(46, 204, 113, 0.4);
+    color: var(--success);
+  }
+
+  .status.error {
+    display: block;
+    background: rgba(255, 92, 92, 0.12);
+    border: 1px solid rgba(255, 92, 92, 0.4);
+    color: var(--error);
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* honeypot field, hidden from real users */
+  .hp { position: absolute; left: -9999px; opacity: 0; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Support</h1>
+      <p>Tell us what's going on and we'll get back to you as soon as we can.</p>
+    </header>
+
+    <div class="card">
+      <form id="support-form" action="https://formspree.io/f/xnjyenap" method="POST">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required placeholder="Your name" />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required placeholder="you@example.com" />
+
+        <label for="category">What's this about?</label>
+        <select id="category" name="category" required>
+          <option value="" disabled selected>Select a category</option>
+          <option value="Bug Report">Bug report</option>
+          <option value="Billing">Billing</option>
+          <option value="Feature Request">Feature request</option>
+          <option value="Account">Account issue</option>
+          <option value="General">General question</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" required placeholder="Brief summary" />
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required placeholder="Describe your issue in detail. Include steps to reproduce, error messages, or anything else that helps."></textarea>
+        <p class="hint">The more detail you give, the faster we can help.</p>
+
+        <!-- honeypot anti-spam field -->
+        <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" />
+
+        <!-- Formspree config -->
+        <input type="hidden" name="_subject" value="New support request" />
+
+        <button type="submit" id="submit-btn">Send message</button>
+
+        <div class="status" id="status"></div>
+      </form>
+    </div>
+
+    <footer>
+      Prefer email? Reach us at <a href="mailto:support@example.com">support@example.com</a>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('support-form');
+    const statusEl = document.getElementById('status');
+    const submitBtn = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      statusEl.className = 'status';
+      statusEl.textContent = '';
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          statusEl.className = 'status success';
+          statusEl.textContent = "Thanks — your message has been sent. We'll get back to you by email shortly.";
+          form.reset();
+        } else {
+          const data = await response.json().catch(() => null);
+          const msg = data && data.errors
+            ? data.errors.map(err => err.message).join(', ')
+            : 'Something went wrong. Please try again or email us directly.';
+          statusEl.className = 'status error';
+          statusEl.textContent = msg;
+        }
+      } catch (err) {
+        statusEl.className = 'status error';
+        statusEl.textContent = 'Network error. Please check your connection and try again.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send message';
+      }
+    });
+  </script>
+</body>
+</html>
